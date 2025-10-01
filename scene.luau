@@ -1,14 +1,9 @@
 local render = require("render")
 
-local uv_shader = render.shader{
+return render.shader{
     fragment = function(self)
-        return vec4(self.uv, 0, 1)
+        local image = self.uniform("image")
+        local uv = self.uniform("uv")
+        return self.texture(image, uv)
     end
 }
-
-local scene = pipeline.scene()
-scene.add_plane{
-    shader = uv_shader
-}
-
-scene:render("test.png")
