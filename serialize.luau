@@ -1,4 +1,6 @@
-function serialize(x)
+local module = {}
+
+module.serialize = function(x)
     local result = ""
     if type(x) == "table" then
         local is_array = true
@@ -17,9 +19,9 @@ function serialize(x)
         for k, v in x do
             local separator = if is_first then "" else ", "
             if is_array then
-                result = result .. `{separator}{serialize(v)}` 
+                result = result .. `{separator}{module.serialize(v)}` 
             else
-                result = result .. `{separator}\"{k}\": {serialize(v)}` 
+                result = result .. `{separator}\"{k}\": {module.serialize(v)}` 
             end
             is_first = false
         end
@@ -32,10 +34,8 @@ function serialize(x)
     return result
 end
 
-print(serialize{
-    {42, this = "is", a = "dict"},
-    {1, 3, 5, 7, {name = "Dog", height = 20}},
-    420,
-    {ship_id = "crestfall_a9", rating = 0.123},
-    "Hello, world!"
-})
+function module.emit(x)
+    print(module.serialize(x))
+end
+
+return module
