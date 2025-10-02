@@ -38,4 +38,28 @@ function module.emit(x)
     print(module.serialize(x))
 end
 
+function module.to_prims(x)
+    local prims = {}
+    local indices = {}
+    local index = 1
+    local function record_prim(x)
+        indices[x] = index
+        if type(x) == "table" then
+            local inputs = {}
+            for k, v in x do
+                if k ~= 1 then
+                    inputs[k] = record_prim(v)
+                end
+            end
+            table.insert(prims, {[x[1]] = inputs})
+            index += 1
+            return {ref = index - 2}
+        else
+            return {lit = x}
+        end
+    end
+    record_prim(x)
+    return prims
+end
+
 return module
